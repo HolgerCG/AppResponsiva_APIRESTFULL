@@ -2,8 +2,10 @@ package com.example.myapplication777;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -22,19 +24,27 @@ public class MainActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
-    public void clickLogin(View v){
+    public void clickLogin(View view){
         Bundle bundle = this.getIntent().getExtras();
         Map<String, String> datos = new HashMap<String, String>();
+        EditText txtusuario = findViewById(R.id.txtusuario);
+        EditText txtclave = findViewById(R.id.txtclave);
         WebService ws= new WebService(
                 "https://revistas.uteq.edu.ec/ws/login.php?usr="
-                + bundle.getString("Usuario") + "&pass=" + bundle.getString("Clave"),
+                        + txtusuario.getText().toString() + "&pass=" + txtclave.getText().toString(),
                 datos, MainActivity.this, MainActivity.this);
         ws.execute("GET");
     }
 
     @Override
     public void processFinish(String result) throws JSONException {
+        Intent intent = new Intent(this, MainActivity2.class);
         TextView txtRespuesta = findViewById(R.id.txtRespuesta);
-        txtRespuesta.setText(result);
-    }
+        if (result.equals("Login Correcto!")) {
+            startActivity(intent);
+        }
+        else{
+            txtRespuesta.setText(result);
+            }
+        }
 }
